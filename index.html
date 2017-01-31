@@ -2,8 +2,11 @@
 <html>
 <head>
   <link rel="stylesheet" href="blackorwhite.css">
+  <link rel="stylesheet" href="jquery.jqplot.min.css">
 
+  <script src="excanvas.js"></script>
   <script src="jquery-1.4.2.min.js"></script>
+  <script src="jquery.jqplot.js"></script>
   <script src="rx.min.js"></script>
   <script src="brain-0.6.3.js"></script>
   <script src="blackorwhite.js"></script>
@@ -22,7 +25,8 @@
         Click to start the path?
       </div>
         <div id="swatches">
-          <button id="start-button">Start</button>
+          <button id="start-button">Good example</button>
+          <button id="start-bad-button">Bad example</button>
         </div>
       <div id="test-box">
         <div id="test-button" onclick="trainer.trainNetwork();" class="button">train neural network</div>
@@ -31,6 +35,8 @@
         </div>
       </div>
     </div>
+
+    <div id="chart1" style="height:300px;width:600px;"></div>
 
     <div id="progress-box">
       <div id="training-message">

@@ -3,14 +3,17 @@ importScripts("brain-0.6.3.js");
 onmessage = function(event) {
   var data = JSON.parse(event.data);
   var net = new brain.NeuralNetwork({
-    hiddenLayers: [10, 5],
-    learningRate: 0.6
+    hiddenLayers: [50]
   });
 
   net.train(data, {
-    iterations: 9000,
     callback: postProgress,
-    callbackPeriod: 500
+    callbackPeriod: 500,
+    errorThresh: 0.05,  // error threshold to reach
+    iterations: 5000000,   // maximum training iterations
+    log: true,           // console.log() progress periodically
+    logPeriod: 500,       // number of iterations between logging
+    learningRate: 0.05
   });
 
   postMessage(JSON.stringify({type: 'result', net: net.toJSON()}));
