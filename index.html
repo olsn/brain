@@ -4,6 +4,7 @@
   <link rel="stylesheet" href="blackorwhite.css">
 
   <script src="jquery-1.4.2.min.js"></script>
+  <script src="rx.min.js"></script>
   <script src="brain-0.6.3.js"></script>
   <script src="blackorwhite.js"></script>
 
@@ -13,26 +14,15 @@
 <body>
     <a href="http://github.com/harthur/brain"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub" /></a>
 
-  <div id="desc">brain.js demo - train a neural network to recognize color contrast</div>
+  <div id="desc">brain.js demo - train a neural network to recognize 1-dimensional patterns on a time-axis</div>
 
   <div id="container">
     <div class="section" id="training-box">
       <div class="section-header">
-        Which one can you read more easily?
+        Click to start the path?
       </div>
         <div id="swatches">
-		    <div class="swatch-box">
-            <div id="black-swatch" class="swatch" onclick="trainer.pickSwatch('black');">
-              <div class="swatch-text">This one</div>
-            </div></div>
-	    <div class="swatch-box">
-            <div id="white-swatch" class="swatch" onclick="trainer.pickSwatch('white');">
-              <div class="swatch-text">This one</div>
-            </div></div>
-        </div>
-        <div id="training-buttons">
-          <span class="pass-button button" onclick="trainer.changeColor();"
-                title="skip">&rarr;</span>
+          <button id="start-button">Start</button>
         </div>
       <div id="test-box">
         <div id="test-button" onclick="trainer.trainNetwork();" class="button">train neural network</div>
@@ -54,41 +44,10 @@
 
     <div class="section" id="testing-box">
       <div id="swatches">
-	      <div id="nn-swatch-box" class="swatch-box">
-            <div id="nn-swatch" class="swatch" onclick="tester.viewCode('nn');"
-                 title="view neural network code">
-              <div class="swatch-text">your neural network</div>
-            </div>
-            <div class="view-code" onclick="tester.viewCode('nn');">code
-	            <div class="view-code-arrow">&#x25B6;</div>
-  	        </div>
-	      </div>
-	      <div id="wcag-swatch-box" class="swatch-box">
-          <div id="wcag-swatch" class="swatch"
-               onclick="tester.viewCode('wcag');" title="view luminosity code">
-          <div class="swatch-text">luminosity algorithm</div>
-          </div>
-          <div class="view-code" onclick="tester.viewCode('wcag')">code
-	          <div class="view-code-arrow">&#x25B6;</div>
-	        </div>
-	      </div>
-        <div id="yiq-swatch-box" class="swatch-box">
-          <div id="yiq-swatch" class="swatch"
-               onclick="tester.viewCode('yiq');" title="view yiq code">
-               <div class="swatch-text">YIQ formula</div>
-          </div>
-          <div class="view-code" onclick="tester.viewCode('yiq')">code
-	          <div class="view-code-arrow">&#x25B6;</div>
-	        </div>
-        </div>
+	      <button id="eval-button">Test</button>
+        <br>
+        <span id="output33"></span>
       </div>
-      <div id="training-buttons">
-        <span class="pass-button button" onclick="tester.testRandom();"
-              title="next color">&rarr;</span>
-      </div>
-    </div>
-    <div id="code-box">
-      <pre id="code"></pre>
     </div>
   </div>
 </body>

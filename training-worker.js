@@ -2,7 +2,10 @@ importScripts("brain-0.6.3.js");
 
 onmessage = function(event) {
   var data = JSON.parse(event.data);
-  var net = new brain.NeuralNetwork();
+  var net = new brain.NeuralNetwork({
+    hiddenLayers: [10, 5],
+    learningRate: 0.6
+  });
 
   net.train(data, {
     iterations: 9000,
