@@ -1,3 +1,4 @@
+const ARR_LEN = 300;
 var cursorX;
 var cursorY;
 var lx=0, ly=0;
@@ -10,6 +11,18 @@ document.onmousemove = function(e) {
     lx = e.pageX;
     ly = e.pageY;
 };
+
+// convnet.js
+var layer_defs = [];
+layer_defs.push({type:'input', out_sx: 1, out_sy: 1, out_depth: ARR_LEN});
+layer_defs.push({type:'fc', num_neurons: 100, activation: 'sigmoid'});
+layer_defs.push({type:'fc', num_neurons: 30, activation: 'relu'});
+layer_defs.push({type:'fc', num_neurons: 5, activation: 'tanh'});
+layer_defs.push({type:'softmax', num_classes:2});
+
+convNet = new convnetjs.Net();
+convNet.makeLayers(layer_defs);
+convTrainer = new convnetjs.SGDTrainer(convNet, {learning_rate:0.1, momentum:0.1, batch_size:10, l2_decay:0.001});
 
 $(document).ready(function(){
   $("#progress-box").hide();
@@ -25,7 +38,7 @@ $(document).ready(function(){
   var clickedBadStart$ = Rx.Observable.fromEvent(startBadBtn, "click");
   var testBtn = document.getElementById("eval-button");
   var clickedTest$ = Rx.Observable.fromEvent(testBtn, "click");
-  var mouseY$ = Rx.Observable.interval(5)
+  var mouseY$ = Rx.Observable.interval(10)
     .map(() => cursorY);
 
     clickedStart$
@@ -67,16 +80,15 @@ $(document).ready(function(){
 });
 
 var trainer = {
-
   data : [{
-    input: interpolateArray([0], 300),
+    input: interpolateArray([0], ARR_LEN),
     output: [0]
   }],
   goodExamples: [],
 
   pickData : function(dataArray, output) {
-    this.goodExamples.push(interpolateArray(dataArray, 300))
-    var result = { input: interpolateArray(dataArray, 300),
+    this.goodExamples.push(interpolateArray(dataArray, ARR_LEN))
+    var result = { input: interpolateArray(dataArray, ARR_LEN),
                    output: [output]};
     this.data.push(result);
     $("#chart1").text(" ");
@@ -115,6 +127,8 @@ var trainer = {
       logPeriod: 500,       // number of iterations between logging
       learningRate: 0.05
     });
+
+      convNetTrain(this.data);
       tester.show(net);
     }
   },
@@ -135,7 +149,7 @@ var trainer = {
   },
 
   showProgress : function(progress) {
-    var completed = progress.iterations / trainer.iterations * 300;
+    var completed = progress.iterations / trainer.iterations * 100;
     $("#progress-completed").css("width", completed + "%");
   }
 }
@@ -148,12 +162,17 @@ var tester = {
   },
 
   evaluate: function(data) {
-    var output = this.runNetwork(interpolateArray(data, 300));
-    $("#output33").text(JSON.stringify(output));
+    const inputArr = interpolateArray(data, ARR_LEN);
+    var output = this.runNetwork(inputArr);
+    var convNetOutput = convNet.forward(new convnetjs.Vol(inputArr));
+    $("#output33").text(JSON.stringify(output) + ", convNet: " + convNetOutput.w[1]);
   }
 }
 
 function interpolateArray(data, fitCount) {
+    while (data.length < fitCount) {
+      data.push(0);
+    }
 
     var linearInterpolate = function (before, after, atPoint) {
         return before + (after - before) * atPoint;
@@ -172,3 +191,12 @@ function interpolateArray(data, fitCount) {
     newData[fitCount - 1] = data[data.length - 1]; // for new allocation
     return newData;
 };
+
+function convNetTrain(sets) {
+  for (var c = 0; c < 500; ++c) {
+    sets.forEach(set => {
+      var x = new convnetjs.Vol(set.input);
+      convTrainer.train(x, set.output[0]);
+    });
+  }
+}
